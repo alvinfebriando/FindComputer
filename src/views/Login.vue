@@ -3,6 +3,7 @@
     <input type="text" placeholder="email" v-model="username" />
     <input type="password" placeholder="password" v-model="password" />
     <button @click="handleSubmit">Sign in</button>
+    <button @click="register">Register</button>
   </div>
 </template>
 
@@ -16,7 +17,16 @@ export default {
   },
   methods: {
     handleSubmit() {
-      alert(`${this.username} ${this.password}`);
+      this.$store.commit("login");
+      this.$router.push("/");
+    },
+    register() {
+      this.$router.push("/register");
+    }
+  },
+  created() {
+    if (this.$store.state.isLoggedIn) {
+      this.$router.push("/");
     }
   }
 };
@@ -31,5 +41,9 @@ export default {
 input {
   width: 80%;
   margin: 10px 0;
+}
+
+button {
+  margin: 5px;
 }
 </style>
