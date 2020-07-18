@@ -29,7 +29,7 @@ export default {
 
 <style>
 #sign-up-form {
-  width: 20%;
+  width: 50%;
   margin: 0 auto;
 }
 
