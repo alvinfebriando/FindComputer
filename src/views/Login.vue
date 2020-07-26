@@ -31,11 +31,16 @@ export default {
         }),
       });
       const token = response.headers.get("Authorization");
-      this.$store.commit("login", token);
+      return token;
     },
-    handleSubmit() {
-      this.login();
-      this.$router.push("/");
+    async handleSubmit() {
+      const token = await this.login();
+      if (token) {
+        this.$store.commit("login", token);
+        this.$router.push("/");
+      } else {
+        alert("failed");
+      }
     },
     register() {
       this.$router.push("/register");
