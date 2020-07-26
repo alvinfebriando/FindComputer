@@ -37,13 +37,15 @@ export default {
           },
         }
       );
-      const data = await response.json();
-      console.log(data);
+      return response.status;
     },
     async handleSubmit() {
-      await this.register();
-      this.$store.commit("login");
-      this.$router.push("/");
+      const status = await this.register();
+      if (status === 200) {
+        this.$router.push("/login");
+      } else {
+        alert("Something went wrong");
+      }
     },
   },
 };
