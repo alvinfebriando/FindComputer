@@ -4,17 +4,23 @@
     <input type="password" placeholder="password" v-model="password" />
     <button @click="handleSubmit">Sign in</button>
     <button @click="register">Register</button>
+    <Loader>{{statusMessage}}</Loader>
   </div>
 </template>
 
 <script>
 import config from "../config/config";
+import Loader from "../components/Loader";
 
 export default {
+  components: {
+    Loader: Loader,
+  },
   data() {
     return {
       username: "",
       password: "",
+      statusMessage: "",
     };
   },
   methods: {
@@ -31,15 +37,25 @@ export default {
         }),
       });
       const token = response.headers.get("Authorization");
-      return token;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(token);
+        }, 2000);
+      });
     },
     async handleSubmit() {
+      this.statusMessage = "Signing";
       const token = await this.login();
       if (token) {
-        this.$store.commit("login", token);
-        this.$router.push("/");
+        this.statusMessage = "Success";
+        setTimeout(() => {
+          this.$store.commit("login", token);
+          this.$router.push("/");
+        }, 500);
       } else {
-        alert("failed");
+        this.statusMessage = "Failed";
+        this.username = "";
+        this.password = "";
       }
     },
     register() {

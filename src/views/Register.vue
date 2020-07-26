@@ -5,18 +5,24 @@
     <input type="text" placeholder="Username" v-model="username" />
     <input type="password" placeholder="Password" v-model="password" />
     <button @click="handleSubmit">Register</button>
+    <Loader>{{this.statusMessage}}</Loader>
   </div>
 </template>
 
 <script>
 import config from "../config/config";
+import Loader from "../components/Loader";
 export default {
+  components: {
+    Loader: Loader,
+  },
   data() {
     return {
       username: "",
       password: "",
       email: "",
       name: "",
+      statusMessage: "",
     };
   },
   methods: {
@@ -37,14 +43,22 @@ export default {
           },
         }
       );
-      return response.status;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(response.status);
+        }, 2000);
+      });
     },
     async handleSubmit() {
+      this.statusMessage = "Registering";
       const status = await this.register();
       if (status === 200) {
-        this.$router.push("/login");
+        this.statusMessage = "Success";
+        setTimeout(() => {
+          this.$router.push("/login");
+        }, 500);
       } else {
-        alert("Something went wrong");
+        this.statusMessage = "Failed";
       }
     },
   },
