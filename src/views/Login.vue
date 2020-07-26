@@ -1,6 +1,6 @@
 <template>
   <div id="sign-up-form">
-    <input type="text" placeholder="email" v-model="username" />
+    <input type="text" placeholder="username" v-model="username" />
     <input type="password" placeholder="password" v-model="password" />
     <button @click="handleSubmit">Sign in</button>
     <button @click="register">Register</button>
@@ -8,27 +8,48 @@
 </template>
 
 <script>
+import config from "../config/config";
+
 export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
+    async login() {
+      const { username, password } = this;
+      const response = await fetch(`${config.API_URL}/login`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+      const token = response.headers.get("Authorization");
+      this.$store.commit("login", token);
+    },
     handleSubmit() {
-      this.$store.commit("login");
+      this.login();
       this.$router.push("/");
     },
     register() {
       this.$router.push("/register");
-    }
+    },
   },
   created() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.$store.commit("login", token);
+    }
     if (this.$store.state.isLoggedIn) {
       this.$router.push("/");
     }
-  }
+  },
 };
 </script>
 

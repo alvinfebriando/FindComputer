@@ -9,21 +9,43 @@
 </template>
 
 <script>
+import config from "../config/config";
 export default {
   data() {
     return {
       username: "",
       password: "",
       email: "",
-      name: ""
+      name: "",
     };
   },
   methods: {
-    handleSubmit() {
+    async register() {
+      const { username, password, email, name } = this;
+      const response = await fetch(
+        `${config.API_URL}${config.API_PREFIX}/users`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            username,
+            password,
+            email,
+            name,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    },
+    async handleSubmit() {
+      await this.register();
       this.$store.commit("login");
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 
