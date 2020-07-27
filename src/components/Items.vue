@@ -3,6 +3,7 @@
     <thead>
       <th>Name</th>
       <th>Description</th>
+      <th>Category</th>
       <th>Price</th>
       <th>Owner</th>
       <th v-if="this.owner" colspan="2">Action</th>
@@ -13,6 +14,7 @@
         <tr v-for="(v) in getItems" :key="v.id">
           <td>{{v.name}}</td>
           <td>{{v.description}}</td>
+          <td>{{v.category}}</td>
           <td>{{v.price}}</td>
           <td>{{v.owner.username}}</td>
           <td>
@@ -25,7 +27,7 @@
       </template>
       <template v-else>
         <tr>
-          <td colspan="5">No data</td>
+          <td colspan="6">No data</td>
         </tr>
       </template>
     </tbody>
@@ -34,6 +36,7 @@
         <tr v-for="(v) in getItems" :key="v.id">
           <td>{{v.name}}</td>
           <td>{{v.description}}</td>
+          <td>{{v.category}}</td>
           <td>{{v.price}}</td>
           <td>{{v.owner.username}}</td>
           <td v-if="!v.self">
@@ -46,7 +49,7 @@
       </template>
       <template v-else>
         <tr>
-          <td colspan="5">No data</td>
+          <td colspan="6">No data</td>
         </tr>
       </template>
     </tbody>
@@ -117,14 +120,7 @@ export default {
       );
       const data = await response.json();
       this.items = data;
-    } else if (!this.owner) {
-      const response = await callAPI(`/items`, "GET", this.$store.state.token);
-      const data = await response.json();
-      this.items = data;
-    }
-  },
-  async updated() {
-    if (this.category) {
+    } else if (this.category) {
       const response = await callAPI(
         `/items?category=${this.category}`,
         "GET",
@@ -132,7 +128,22 @@ export default {
       );
       const data = await response.json();
       this.items = data;
+    } else if (!this.owner) {
+      const response = await callAPI(`/items`, "GET", this.$store.state.token);
+      const data = await response.json();
+      this.items = data;
     }
+  },
+  watch: {
+    async category() {
+      const response = await callAPI(
+        `/items?category=${this.category}`,
+        "GET",
+        this.$store.state.token
+      );
+      const data = await response.json();
+      this.items = data;
+    },
   },
 };
 </script>
