@@ -46,7 +46,7 @@ export default {
       const data = await response.json();
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve({ status: data.code, message: data.message });
+          resolve({ status: response.status, message: data.message });
         }, 2000);
       });
     },
