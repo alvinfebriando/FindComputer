@@ -9,7 +9,7 @@
       <th v-else>Action</th>
     </thead>
     <tbody v-if="this.owner">
-      <tr v-for="(v) in items" :key="v.id">
+      <tr v-for="(v) in getItems" :key="v.id">
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
@@ -19,12 +19,13 @@
       </tr>
     </tbody>
     <tbody v-else>
-      <tr v-for="(v) in items" :key="v.id">
+      <tr v-for="(v) in getItems" :key="v.id">
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
         <td>{{v.owner.username}}</td>
-        <td>Buy</td>
+        <td v-if="!v.self">Buy</td>
+        <td v-else>Can't buy</td>
       </tr>
     </tbody>
   </table>
@@ -38,6 +39,17 @@ export default {
     return {
       items: [],
     };
+  },
+  computed: {
+    getItems() {
+      return this.items.map((i) => {
+        if (i.owner.username === this.$store.state.username) {
+          return { ...i, self: true };
+        } else {
+          return { ...i, self: false };
+        }
+      });
+    },
   },
   async created() {
     if (this.owner) {
