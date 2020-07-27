@@ -13,7 +13,12 @@ export default {
   name: "Home",
   components: {
     Items,
-    Content
-  }
+    Content,
+  },
+  created() {
+    if (!this.$store.state.token) {
+      this.$router.push("/login");
+    }
+  },
 };
 </script>
