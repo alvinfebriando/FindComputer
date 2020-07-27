@@ -1,24 +1,10 @@
-# frontend
+# Find Computer
 
-## Project setup
-```
-yarn install
-```
+A frontend app for FindComputer website.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+Server hosted in https://desolate-hamlet-69047.herokuapp.com/
 
-### Compiles and minifies for production
-```
-yarn build
-```
+Frontend hosted in https://alvinfebriando.github.io/find-computer
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Username: john  
+Password: john123
