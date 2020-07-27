@@ -43,22 +43,23 @@ export default {
           },
         }
       );
+      const data = await response.json();
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(response.status);
+          resolve({ status: data.code, message: data.message });
         }, 2000);
       });
     },
     async handleSubmit() {
       this.statusMessage = "Registering";
-      const status = await this.register();
+      const { status, message } = await this.register();
       if (status === 200) {
         this.statusMessage = "Success";
         setTimeout(() => {
           this.$router.push("/login");
         }, 500);
       } else {
-        this.statusMessage = "Failed";
+        this.statusMessage = `Failed, ${message}`;
       }
     },
   },
