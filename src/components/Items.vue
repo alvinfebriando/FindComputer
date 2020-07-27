@@ -56,7 +56,7 @@
 <script>
 import callAPI from "../util/callAPI";
 export default {
-  props: ["owner"],
+  props: ["owner", "category"],
   data() {
     return {
       items: [],
@@ -117,8 +117,19 @@ export default {
       );
       const data = await response.json();
       this.items = data;
-    } else {
+    } else if (!this.owner) {
       const response = await callAPI(`/items`, "GET", this.$store.state.token);
+      const data = await response.json();
+      this.items = data;
+    }
+  },
+  async updated() {
+    if (this.category) {
+      const response = await callAPI(
+        `/items?category=${this.category}`,
+        "GET",
+        this.$store.state.token
+      );
       const data = await response.json();
       this.items = data;
     }

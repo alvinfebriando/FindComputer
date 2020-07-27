@@ -49,6 +49,11 @@ const routes = [
     name: 'EditItem',
     component: () => import('../views/EditItem.vue'),
   },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/Search.vue'),
+  },
 ];
 
 const router = new VueRouter({
