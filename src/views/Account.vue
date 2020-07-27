@@ -1,5 +1,6 @@
 <template>
   <Content>
+    <router-link to="/add-item" class="btn-link">Add item</router-link>
     <Items owner="self"></Items>
   </Content>
 </template>
@@ -10,7 +11,16 @@ import Content from "../components/Content";
 export default {
   components: {
     Items,
-    Content
-  }
+    Content,
+  },
 };
 </script>
+
+<style scoped>
+.btn-link {
+  padding: 10px;
+  display: inline-block;
+  margin: 10px;
+  color: green;
+}
+</style>
