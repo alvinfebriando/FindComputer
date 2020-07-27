@@ -9,7 +9,7 @@
       <th v-else>Action</th>
     </thead>
     <tbody v-if="this.owner">
-      <tr v-for="(v, i) in items" :key="i">
+      <tr v-for="(v) in items" :key="v.id">
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
@@ -19,7 +19,7 @@
       </tr>
     </tbody>
     <tbody v-else>
-      <tr v-for="(v, i) in items" :key="i">
+      <tr v-for="(v) in items" :key="v.id">
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
