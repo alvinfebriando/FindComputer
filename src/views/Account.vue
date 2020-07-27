@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import config from "../config/config";
+import callAPI from "../util/callAPI";
 import Items from "../components/Items";
 import Content from "../components/Content";
 import Profile from "../components/Profile";
@@ -27,14 +27,10 @@ export default {
   },
   async created() {
     const username = this.$store.state.username;
-    const response = await fetch(
-      `${config.API_URL}${config.API_PREFIX}/users/${username}`,
-      {
-        headers: {
-          Authorization: this.$store.state.token,
-          "Content-Type": "application/json",
-        },
-      }
+    const response = await callAPI(
+      `/users/${username}`,
+      "GET",
+      this.$store.state.token
     );
     const data = await response.json();
     this.name = data.name;

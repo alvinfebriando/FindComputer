@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import config from "../config/config";
+import callAPI from "../util/callAPI";
 export default {
   props: ["owner"],
   data() {
@@ -67,38 +67,27 @@ export default {
       this.$router.push(`/edit-item/${id}`);
     },
     async handleDelete(id) {
-      await fetch(`${config.API_URL}${config.API_PREFIX}/items/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: this.$store.state.token,
-          "Content-Type": "application/json",
-        },
-      });
+      await callAPI(`/items/${id}`, "DELETE", this.$store.state.token);
       this.items = this.items.filter((i) => i.id !== id);
     },
     async handleBuy(id) {
-      const response = await fetch(
-        `${config.API_URL}${config.API_PREFIX}/items/${id}/${this.$store.state.username}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: this.$store.state.token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            name: "",
-            description: "",
-            price: "",
-            category: "",
-            owner: JSON.stringify({
-              username: this.$store.state.username,
-            }),
-          }),
-        }
+      const body = JSON.stringify({
+        id: id,
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        owner: JSON.stringify({
+          username: this.$store.state.username,
+        }),
+      });
+      const response = await callAPI(
+        `/items/${id}/${this.$store.state.username}`,
+        "POST",
+        this.$store.state.token,
+        body
       );
       const data = await response.json();
-      // console.log(data);
       this.items = this.items.map((i) => {
         if (i.id == data.id) {
           return data;
@@ -121,27 +110,15 @@ export default {
   },
   async created() {
     if (this.owner) {
-      const response = await fetch(
-        `${config.API_URL}${config.API_PREFIX}/items?username=${this.owner}`,
-        {
-          headers: {
-            Authorization: this.$store.state.token,
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await callAPI(
+        `/items?username=${this.owner}`,
+        "GET",
+        this.$store.state.token
       );
       const data = await response.json();
       this.items = data;
     } else {
-      const response = await fetch(
-        `${config.API_URL}${config.API_PREFIX}/items`,
-        {
-          headers: {
-            Authorization: this.$store.state.token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await callAPI(`/items`, "GET", this.$store.state.token);
       const data = await response.json();
       this.items = data;
     }

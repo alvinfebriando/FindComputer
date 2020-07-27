@@ -14,7 +14,7 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 import Loader from "../components/Loader";
-import config from "../config/config";
+import callAPI from "../util/callAPI";
 export default {
   components: {
     Loader,
@@ -45,22 +45,18 @@ export default {
       if (this.$v.$invalid) {
         this.statusMessage = "Please enter a valid value";
       } else {
-        const response = await fetch(
-          config.API_URL + config.API_PREFIX + "/users/" + username,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: this.$store.state.token,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username,
-              id: userId,
-              email,
-              password,
-              name,
-            }),
-          }
+        const body = JSON.stringify({
+          username,
+          id: userId,
+          email,
+          password,
+          name,
+        });
+        const response = await callAPI(
+          `/users/${username}`,
+          "PUT",
+          this.$store.state.token,
+          body
         );
         setTimeout(() => {
           if (response.status === 200) {

@@ -26,7 +26,7 @@
 <script>
 import { required, minValue } from "vuelidate/lib/validators";
 import Loader from "../components/Loader";
-import config from "../config/config";
+import callAPI from "../util/callAPI";
 const validateCategory = (value) => value !== "NONE";
 
 export default {
@@ -62,24 +62,20 @@ export default {
         this.statusMessage = "Please enter a valid value";
       } else {
         this.statusMessage = "Adding";
-        const response = await fetch(
-          config.API_URL + config.API_PREFIX + "/items",
-          {
-            method: "POST",
-            headers: {
-              Authorization: this.$store.state.token,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              description,
-              price,
-              category,
-              owner: {
-                username: this.$store.state.username,
-              },
-            }),
-          }
+        const body = JSON.stringify({
+          name,
+          description,
+          price,
+          category,
+          owner: {
+            username: this.$store.state.username,
+          },
+        });
+        const response = await callAPI(
+          `/items`,
+          "POST",
+          this.$store.state.token,
+          body
         );
         setTimeout(() => {
           if (response.status === 200) {

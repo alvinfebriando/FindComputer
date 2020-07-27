@@ -11,6 +11,7 @@
 <script>
 import config from "../config/config";
 import Loader from "../components/Loader";
+import callAPI from "../util/callAPI";
 
 export default {
   components: {
@@ -26,14 +27,7 @@ export default {
   methods: {
     async fetchUserId(token) {
       const { username } = this;
-      const response = await fetch(
-        `${config.API_URL}${config.API_PREFIX}/users/${username}`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      const response = await callAPI(`/users/${username}`, "GET", token);
       const data = await response.json();
       return data.id;
     },
