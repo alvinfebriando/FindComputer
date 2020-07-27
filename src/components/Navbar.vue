@@ -2,7 +2,7 @@
   <div class="navbar">
     <div>FindComputer</div>
     <div class="nav-links">
-      <router-link to="/">Home</router-link>
+      <router-link v-if="isLoggedIn" to="/">Home</router-link>
       <router-link v-if="isLoggedIn" to="/account">Account</router-link>
       <router-link v-if="!isLoggedIn" to="/login">Log In</router-link>
       <router-link v-else to="/logout">Log Out</router-link>
@@ -12,12 +12,12 @@
 
 <script>
 export default {
-  name: "Navbar",
+  name: 'Navbar',
   computed: {
     isLoggedIn() {
       return this.$store.state.isLoggedIn;
-    }
-  }
+    },
+  },
 };
 </script>
 
