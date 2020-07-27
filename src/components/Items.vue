@@ -9,24 +9,46 @@
       <th v-else>Action</th>
     </thead>
     <tbody v-if="this.owner">
-      <tr v-for="(v) in getItems" :key="v.id">
-        <td>{{v.name}}</td>
-        <td>{{v.description}}</td>
-        <td>{{v.price}}</td>
-        <td>{{v.owner.username}}</td>
-        <td>Edit</td>
-        <td>Delete</td>
-      </tr>
+      <template v-if="this.items.length >= 1">
+        <tr v-for="(v) in getItems" :key="v.id">
+          <td>{{v.name}}</td>
+          <td>{{v.description}}</td>
+          <td>{{v.price}}</td>
+          <td>{{v.owner.username}}</td>
+          <td>
+            <button @click="handleEdit(v.id)">Edit</button>
+          </td>
+          <td>
+            <button @click="handleDelete(v.id)">Delete</button>
+          </td>
+        </tr>
+      </template>
+      <template v-else>
+        <tr>
+          <td colspan="5">No data</td>
+        </tr>
+      </template>
     </tbody>
     <tbody v-else>
-      <tr v-for="(v) in getItems" :key="v.id">
-        <td>{{v.name}}</td>
-        <td>{{v.description}}</td>
-        <td>{{v.price}}</td>
-        <td>{{v.owner.username}}</td>
-        <td v-if="!v.self">Buy</td>
-        <td v-else>Can't buy</td>
-      </tr>
+      <template v-if="this.items.length >= 1">
+        <tr v-for="(v) in getItems" :key="v.id">
+          <td>{{v.name}}</td>
+          <td>{{v.description}}</td>
+          <td>{{v.price}}</td>
+          <td>{{v.owner.username}}</td>
+          <td v-if="!v.self">
+            <button @click="handleBuy(v.id)">Buy</button>
+          </td>
+          <td v-else>
+            <button class="disabled" disabled="disabled">Buy</button>
+          </td>
+        </tr>
+      </template>
+      <template v-else>
+        <tr>
+          <td colspan="5">No data</td>
+        </tr>
+      </template>
     </tbody>
   </table>
 </template>
@@ -39,6 +61,52 @@ export default {
     return {
       items: [],
     };
+  },
+  methods: {
+    async handleEdit(id) {
+      this.$router.push(`/edit-item/${id}`);
+    },
+    async handleDelete(id) {
+      await fetch(`${config.API_URL}${config.API_PREFIX}/items/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: this.$store.state.token,
+          "Content-Type": "application/json",
+        },
+      });
+      this.items = this.items.filter((i) => i.id !== id);
+    },
+    async handleBuy(id) {
+      const response = await fetch(
+        `${config.API_URL}${config.API_PREFIX}/items/${id}/${this.$store.state.username}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            name: "",
+            description: "",
+            price: "",
+            category: "",
+            owner: JSON.stringify({
+              username: this.$store.state.username,
+            }),
+          }),
+        }
+      );
+      const data = await response.json();
+      // console.log(data);
+      this.items = this.items.map((i) => {
+        if (i.id == data.id) {
+          return data;
+        } else {
+          return i;
+        }
+      });
+    },
   },
   computed: {
     getItems() {
@@ -92,5 +160,8 @@ td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 5px;
+}
+.disabled {
+  cursor: not-allowed;
 }
 </style>
