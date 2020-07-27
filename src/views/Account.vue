@@ -2,7 +2,7 @@
   <Content>
     <router-link to="/add-item" class="btn-link">Add item</router-link>
     <router-link to="/edit-profile" class="btn-link">Edit Profile</router-link>
-    <Items owner="self"></Items>
+    <Items :owner="this.$store.state.username"></Items>
   </Content>
 </template>
 

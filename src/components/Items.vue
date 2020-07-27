@@ -13,7 +13,7 @@
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
-        <td>{{v.owner}}</td>
+        <td>{{v.owner.username}}</td>
         <td>Edit</td>
         <td>Delete</td>
       </tr>
@@ -23,7 +23,7 @@
         <td>{{v.name}}</td>
         <td>{{v.description}}</td>
         <td>{{v.price}}</td>
-        <td>{{v.owner}}</td>
+        <td>{{v.owner.username}}</td>
         <td>Buy</td>
       </tr>
     </tbody>
@@ -31,23 +31,41 @@
 </template>
 
 <script>
+import config from "../config/config";
 export default {
   props: ["owner"],
   data() {
     return {
-      items: [
-        { name: "nA", description: "dA", price: 1, owner: "oA" },
-        { name: "nB", description: "dB", price: 2, owner: "oB" }
-      ]
+      items: [],
     };
   },
-  created() {
+  async created() {
     if (this.owner) {
-      // alert(this.owner);
+      const response = await fetch(
+        `${config.API_URL}${config.API_PREFIX}/items?username=${this.owner}`,
+        {
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      this.items = data;
     } else {
-      // alert(null);
+      const response = await fetch(
+        `${config.API_URL}${config.API_PREFIX}/items`,
+        {
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      this.items = data;
     }
-  }
+  },
 };
 </script>
 
