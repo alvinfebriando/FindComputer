@@ -95,6 +95,18 @@ export default {
       await this.update();
     },
   },
+  async created() {
+    const response = await callAPI(
+      `/items/${this.$route.params.id}`,
+      "GET",
+      this.$store.state.token
+    );
+    const data = await response.json();
+    this.name = data.name;
+    this.description = data.description;
+    this.price = data.price;
+    this.category = data.category;
+  },
 };
 </script>
 

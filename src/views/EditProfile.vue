@@ -71,6 +71,16 @@ export default {
       }
     },
   },
+  async created() {
+    const response = await callAPI(
+      `/users/${this.$store.state.username}`,
+      "GET",
+      this.$store.state.token
+    );
+    const data = await response.json();
+    this.name = data.name;
+    this.email = data.email;
+  },
 };
 </script>
 
