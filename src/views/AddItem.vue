@@ -80,6 +80,9 @@ export default {
         setTimeout(() => {
           if (response.status === 200) {
             this.statusMessage = "Added";
+            setTimeout(() => {
+              this.$router.push("/account");
+            }, 500);
           } else {
             this.statusMessage = "Failed";
           }
