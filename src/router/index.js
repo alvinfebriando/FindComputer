@@ -44,6 +44,11 @@ const routes = [
     name: 'EditProfile',
     component: () => import('../views/EditProfile.vue'),
   },
+  {
+    path: '/edit-item/:id',
+    name: 'EditItem',
+    component: () => import('../views/EditItem.vue'),
+  },
 ];
 
 const router = new VueRouter({
