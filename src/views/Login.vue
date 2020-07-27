@@ -24,6 +24,19 @@ export default {
     };
   },
   methods: {
+    async fetchUserId(token) {
+      const { username } = this;
+      const response = await fetch(
+        `${config.API_URL}${config.API_PREFIX}/users/${username}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      const data = await response.json();
+      return data.id;
+    },
     async login() {
       const { username, password } = this;
       const response = await fetch(`${config.API_URL}/login`, {
@@ -37,19 +50,24 @@ export default {
         }),
       });
       const token = response.headers.get("Authorization");
+      const userId = await this.fetchUserId(token);
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(token);
+          resolve({ token, userId });
         }, 2000);
       });
     },
     async handleSubmit() {
       this.statusMessage = "Signing";
-      const token = await this.login();
+      const { token, userId } = await this.login();
       if (token) {
         this.statusMessage = "Success";
         setTimeout(() => {
-          this.$store.commit("login", token);
+          this.$store.commit("login", {
+            token,
+            username: this.username,
+            userId,
+          });
           this.$router.push("/");
         }, 500);
       } else {
@@ -64,8 +82,10 @@ export default {
   },
   created() {
     const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+    const userId = localStorage.getItem("userId");
     if (token) {
-      this.$store.commit("login", token);
+      this.$store.commit("login", { token, username, userId });
     }
     if (this.$store.state.isLoggedIn) {
       this.$router.push("/");
